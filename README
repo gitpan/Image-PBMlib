@@ -1,0 +1,59 @@
+
+NAME
+       Image::PBMlib - Helper functions for PBM/PGM/PPM image
+       file formats
+
+SYNOPSIS
+           use Image::PBMlib;
+
+           ... open(PPM, "< image.ppm")...
+
+           my $ref = readppmheader(\*PPM);
+
+           my @pixels = readpixels_raw(\*PPM, $$ref{type},
+                                       ($$ref{width} * $$ref{height}) );
+
+           my @pixels = readpixels_dec(\*PPM, $$ref{type},
+                                       ($$ref{width} * $$ref{height}) );
+
+           my @rgb = hextriplettoraw("F00BA4");
+
+           my @rgb = dectriplettoraw("17:34:51");
+
+           my $header = makeppmheader($ref);
+
+
+DESCRIPTION
+       This is primarily a library for reading portable bitmap
+       (PBM), portable graymap (PGM), and portable pixmap (PPM)
+       files. These image formats are only the barest step up
+       from raw data, and have a very simple format which is the
+       key to be "portable".  Writing out images in these formats
+       is very easy.
+
+       Reading images in these formats is also easy, but not
+       quite "very easy". Proper reading of the file needs to
+       happen one byte at a time, since there is no fixed header
+       length. Headers can also contain comments, which must be
+       ignored. Then, once past the header, there are a total of
+       six different ways that the data might need to be read: a
+       raw and an ascii encoding of each image color level.
+
+BUGS
+       The maximum color value is never used.
+
+       No attempt is made to deal with comments after the header
+       of ascii formatted files.
+
+       Not all PBM/PGM/PPM tools are safe for images from
+       untrusted sources but this one should be. Be careful what
+       you use this with.
+
+COPYRIGHT
+       Copyright 2003 Benjamin Elijah Griffin / Eli the Bearded
+       <elijah@cpan.org>
+
+       This library is free software; you can redistribute it
+       and/or modify it under the same terms as Perl itself.
+
+

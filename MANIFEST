@@ -1,0 +1,7 @@
+PBMlib.pm			Image::PBMlib module code
+Makefile.PL			Makefile Maker
+MANIFEST			This file
+README				Formated docs
+TODO				Stuff I might get to
+t/basic.t			Test suite
+t/2.ppm				Test image
