@@ -39,6 +39,10 @@ DESCRIPTION
        six different ways that the data might need to be read: a
        raw and an ascii encoding of each image color level.
 
+CHANGES
+       1.05 fixes two comment related bugs (thanks Ladislav Sladecek!)
+       and some error reporting bugs with bad filehandles.
+
 BUGS
        The maximum color value is never used.
 

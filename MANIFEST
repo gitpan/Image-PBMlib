@@ -4,4 +4,5 @@ MANIFEST			This file
 README				Formated docs
 TODO				Stuff I might get to
 t/basic.t			Test suite
-t/2.ppm				Test image
+t/2.ppm				Small test image
+t/mr-happy.ppm			Bigger test image

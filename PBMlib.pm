@@ -15,7 +15,7 @@ require Exporter;
 	    );
 #	      %hexraw %decraw
 
-$Image::PBMlib::VERSION = '1.0';
+$Image::PBMlib::VERSION = '1.05';
 
 =head1 NAME
 
@@ -133,7 +133,9 @@ sub makeppmheader($) {
   if(defined($$hr{comments}) and length($$hr{comments})) {
     my $com = $$hr{comments};
     $com =~ s/^/#/gm;
-    $com =~ s/([^\n])\Z/$1\n/;
+    if(substr($com, -1, 1) ne "\n") {
+      $com .= "\n";
+    };
     $head .= $com;
   }
 
@@ -203,7 +205,7 @@ sub readppmheader($) {
   
   $rc = read($gr, $in, 3);
 
-  if ($rc != 3) {
+  if (!defined($rc) or $rc != 3) {
     $info{error} = 'Read error or EOF';
     return \%info;
   }
@@ -227,14 +229,14 @@ sub readppmheader($) {
 
     while(1) {
       $rc = read($gr, $in, 1, length($in));
-      if ($rc != 1) {
+      if (!defined($rc) or $rc != 1) {
 	$info{error} = 'Read error or EOF';
 	return \%info;
       }
 
       $no_comments = $in;
       $info{comments} = '';
-      while ($no_comments =~ /#/) {
+      while ($no_comments =~ /#.*\n/) {
         $no_comments =~ s/#(.*\n)/ /;
 	$info{comments} .= $1;
       }
@@ -305,7 +307,7 @@ sub readpixels_dec($$$) {
     if($t == 6) {
       # Color rawbits
       $rc = read($gr, $in, 3);
-      if ($rc < 3) {
+      if (!defined($rc) or $rc < 3) {
         if (@p) { return @p } else { return undef }
       }
       @p2 = unpack("C*", $in);
@@ -439,7 +441,7 @@ sub readpixels_raw($$$) {
     if($t == 6) {
       # Color rawbits
       $rc = read($gr, $in, 3);
-      if ($rc < 3) {
+      if (!defined($rc) or $rc < 3) {
         if (@p) { return @p } else { return undef }
       }
       @p2 = $in =~ /(.)/sg;
@@ -581,6 +583,11 @@ sub dectriplettoraw($) {
 
 This code is pure perl for maximum portability, as befitting the
 PBM/PGM/PPM philiosophy.
+
+=head1 CHANGES
+
+1.05 fixes two comment related bugs (thanks Ladislav Sladecek!) and
+some error reporting bugs with bad filehandles.
 
 =head1 BUGS
 

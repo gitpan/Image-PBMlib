@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 BEGIN{ 
-$ntest = 16;
+$ntest = 22;
 print "1..$ntest\n";
 }
 
@@ -73,6 +73,7 @@ if(open(PPM, "t/2.ppm")) {
        "'$pix[0][0]' eq ' ' and '$pix[0][1]' eq '\@' and '$pix[0][2]' eq '~'");
   }
 
+  close PPM;
 } else {
   print "not ok 4\n";
   print STDERR "Cannot open test image: $!\n";
@@ -118,3 +119,72 @@ $expect = "P5
 okay(16, $header eq $expect, "Header test 2 not as expected");
 
 
+if(open(PPM2, "t/mr-happy.ppm")) {
+  print "ok 17\n";
+
+  my $info2_r = readppmheader(\*PPM2);
+
+  okay(18, !defined($$info2_r{error}), $$info2_r{error});
+  
+  $expect = <<'BIGcomment';
+P6
+# CREATOR: The GIMP's PNM Filter Version 1.0
+# '.' = FFFFFF
+# 'X' = CC0000
+#
+# ....XXXXXXXX....
+# ...X........X...
+# ...X........X...
+# ...X.XX..XX.X...
+# ...X........X...
+# ..XX...X....XX..
+# ..XX...XX...XX..
+# ..XX........XX..
+# ...X.X....X.X...
+# ...X..XXXX..X...
+# ...X........X...
+# ....XXXXXXXX....
+# ......X..X......
+# .XXXXXXXXXXXXXX.
+# X..............X
+# X..X........X..X
+16 16
+255
+BIGcomment
+  
+  $header = makeppmheader($info2_r);
+
+  okay(19, $header eq $expect, "Big comment header test not as expected");
+
+  close PPM2;
+}
+
+
+# Check for bad filehandle errors
+my $bad_r = readppmheader(\*PPM);
+
+if (defined($$bad_r{error}) and $$bad_r{error} =~ /read error/i) {
+  print "ok 20\n";
+} else {
+  print "not ok 20\n";
+  if (defined($$bad_r{error})) {
+    print STDERR "Wrong error: got $$bad_r{error}\n";
+  } else {
+    print STDERR "Missing error: expected read error\n";
+  }
+}
+
+my @bad_p = readpixels_dec(\*PPM, 6, 1);
+if(@bad_p) {
+  print "ok 21\n";
+} else {
+  print "not ok 21\n";
+  print STDERR "readpixels_dec incorrectly returning pixels\n";
+}
+@bad_p = readpixels_raw(\*PPM, 6, 1);
+if(@bad_p) {
+  print "ok 22\n";
+} else {
+  print "not ok 22\n";
+  print STDERR "readpixels_raw incorrectly returning pixels\n";
+}
