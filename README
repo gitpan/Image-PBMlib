@@ -1,63 +1,42 @@
+Image-PBMlib version 2.00
+=========================
 
-NAME
-       Image::PBMlib - Helper functions for PBM/PGM/PPM image
-       file formats
+This is a pure perl library to read and write the netpbm / pbmplus
+family of file formats. It understands PBM (bitmap), PGM (graymap),
+and PPM (pixmap) files. Sometimes those are, collectively, called
+PNM (anymap). The multichannel PAM format is not supported.
 
-SYNOPSIS
-           use Image::PBMlib;
+Version 2 is a nearly complete rewrite with an all new interface.
+It properly supports the maxval attribute of PGM and PPM files,
+up to a full 16 bits per value.
 
-           ... open(PPM, "< image.ppm")...
+Although I have not tested this below Perl 5.10, I expect it will
+work down to 5.6 or so. That said, it has "use 5.010000;" because
+that is what I have tested.
 
-           my $ref = readppmheader(\*PPM);
+INSTALLATION
 
-           my @pixels = readpixels_raw(\*PPM, $$ref{type},
-                                       ($$ref{width} * $$ref{height}) );
+To install this module type the following:
 
-           my @pixels = readpixels_dec(\*PPM, $$ref{type},
-                                       ($$ref{width} * $$ref{height}) );
+   perl Makefile.PL
+   make
+   make test
+   make install
 
-           my @rgb = hextriplettoraw("F00BA4");
+DEPENDENCIES
 
-           my @rgb = dectriplettoraw("17:34:51");
+This module is standalone code that does not require any modules
+not distributed with Perl.
 
-           my $header = makeppmheader($ref);
+COPYRIGHT AND LICENCE
 
+Put the correct copyright and licence information here.
 
-DESCRIPTION
-       This is primarily a library for reading portable bitmap
-       (PBM), portable graymap (PGM), and portable pixmap (PPM)
-       files. These image formats are only the barest step up
-       from raw data, and have a very simple format which is the
-       key to be "portable".  Writing out images in these formats
-       is very easy.
+Copyright (C) 2012 by Benjamin Elijah Griffin / Eli the Bearded
+<elijah@cpan.org>
 
-       Reading images in these formats is also easy, but not
-       quite "very easy". Proper reading of the file needs to
-       happen one byte at a time, since there is no fixed header
-       length. Headers can also contain comments, which must be
-       ignored. Then, once past the header, there are a total of
-       six different ways that the data might need to be read: a
-       raw and an ascii encoding of each image color level.
-
-CHANGES
-       1.05 fixes two comment related bugs (thanks Ladislav Sladecek!)
-       and some error reporting bugs with bad filehandles.
-
-BUGS
-       The maximum color value is never used.
-
-       No attempt is made to deal with comments after the header
-       of ascii formatted files.
-
-       Not all PBM/PGM/PPM tools are safe for images from
-       untrusted sources but this one should be. Be careful what
-       you use this with.
-
-COPYRIGHT
-       Copyright 2003 Benjamin Elijah Griffin / Eli the Bearded
-       <elijah@cpan.org>
-
-       This library is free software; you can redistribute it
-       and/or modify it under the same terms as Perl itself.
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.10.0 or,
+at your option, any later version of Perl 5 you may have available.
 
 
